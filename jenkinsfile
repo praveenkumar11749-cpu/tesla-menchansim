@@ -26,7 +26,7 @@ pipeline{
             steps{
                 sshagent(credentials: ['sever-ssh-p']) {
                     rm -rf ${APP_NAME}
-                    git clone https://github.com/praveenkumar11749-cpu/tesla-menchansim.git
+                    git clone http://github.com/praveenkumar11749-cpu/tesla-menchansim.git
                     cd ${APP_ NAME}
                     mvn clean package
                     sudo cp target/README.md.war /opt/tomcat/webapps/
