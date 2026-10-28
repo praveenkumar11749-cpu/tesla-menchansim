@@ -1,0 +1,43 @@
+package com.finance.service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class FinancialService {
+
+    // Record for holding investment projection results (Java 21 Feature)
+    public record InvestmentResult(
+        BigDecimal initialPrincipal,
+        BigDecimal totalContributions,
+        BigDecimal estimatedReturns,
+        BigDecimal finalBalance
+    ) {}
+
+    public InvestmentResult calculateCompoundGrowth(
+            BigDecimal principal, 
+            BigDecimal monthlyContribution, 
+            double annualRate, 
+            int years) {
+        
+        double monthlyRate = annualRate / 100.0 / 12.0;
+        int totalMonths = years * 12;
+        
+        BigDecimal balance = principal;
+        BigDecimal totalCont = principal;
+        
+        for (int i = 0; i < totalMonths; i++) {
+            // Add monthly contribution
+            balance = balance.add(monthlyContribution);
+            totalCont = totalCont.add(monthlyContribution);
+            // Apply monthly interest
+            BigDecimal interest = balance.multiply(BigDecimal.valueOf(monthlyRate));
+            balance = balance.add(interest);
+        }
+        
+        balance = balance.setScale(2, RoundingMode.HALF_UP);
+        totalCont = totalCont.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal returns = balance.subtract(totalCont).setScale(2, RoundingMode.HALF_UP);
+
+        return new InvestmentResult(principal, totalCont, returns, balance);
+    }
+}
