@@ -1,0 +1,40 @@
+pipeline{
+    agent agent
+
+    environment{
+        SEVER_IP = credentials('maven-sever-ip')
+        APP_NAME = "tesla-menchansim"
+
+    }
+
+    stages {
+
+        stages('checkout'){
+            steps{
+                checkout scm
+
+            }
+        }
+
+        stages('Verify Tools') {
+            steps {
+                sh 'javac -version'
+            }
+        }
+
+        stage('maven build and deploy'{
+            steps{
+                sshagent(credentials: ['sever-ssh-p']) {
+                    rm -rf ${APP_NAME}
+                    git clone https://github.com/praveenkumar11749-cpu/tesla-menchansim.git
+                    cd ${APP_ NAME}
+                    mvn clean package
+                    sudo cp target/README.md.war /opt/tomcat/webapps/
+                  "
+              '''
+                
+                }
+            }
+        }
+    }
+}
